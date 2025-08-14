@@ -1,101 +1,89 @@
-🎉 Hackathon Certificate Generator 🏆
+🎉 Certificate Generator 🏆
 
-A free web app to generate certificates for hackathon participants! Customize the certificate template, upload your own data, and generate certificates easily. Perfect for hackathons, workshops, or competitions.
+A responsive web app created using HTML, CSS, JavaScript, and Python to generate certificates for hackathon participants. This app allows users to use custom templates, add participant data manually or via Excel, preview certificates, and download them automatically. It’s free for everyone!
 
-⚡ Features
+✨ Features
 
-Two Modes of Certificate Generation:
+🖼 Upload your custom certificate template
 
-Excel + Template Upload 📄🎨
+✍️ Manual entry mode: Add team name, college, and member names individually
 
-Upload a template image.
+📄 Excel upload mode: Upload participant data in bulk for automatic certificate generation
 
-Upload an Excel sheet with team/participant data.
+👀 Preview certificates before generating
 
-Automatically generate certificates for all participants.
+💾 Automatically saves generated certificates in a folder
 
-Manual Entry + Preview ✍️👀
+🌐 Free and open for everyone
 
-Upload a custom template.
+🎨 Customizable fonts, name positions, and template design
 
-Add team name, college, and member names manually.
+📱 Simple, responsive, and user-friendly interface
 
-Preview the certificate before generating.
+🛠 Technologies Used
 
-Generate all files at once.
+HTML5 – Structure and form elements
 
-Customizable Templates 🎨
+CSS3 – Styling and layout
 
-Any background image, font, or name placement.
+JavaScript – Form handling, API calls, and interactivity
 
-Automatic File Management 💾
+Python (Flask) – Backend logic for generating certificates
 
-Certificates are saved in a chosen folder.
+Pillow – Python library to edit and generate images
 
-User-Friendly & Free 🌟
+🚀 Installation / Usage
 
-Anyone can use it. No restrictions!
+Clone the repository:
 
-🛠️ Technology Stack
+git clone https://github.com/your-username/hackathon-certificate-generator.git
+cd hackathon-certificate-generator
 
-Frontend: HTML, CSS, JavaScript
 
-Backend: Python (Flask)
+Install Python dependencies:
 
-Libraries: Pillow (for certificate generation)
+pip install flask pillow
 
-📂 Folder Structure
+
+Start the backend server:
+
+python app.py
+
+
+Open index.html in your browser.
+
+Choose a mode:
+
+Manual Entry: Enter team/college info and member names, upload template, preview, then generate.
+
+Excel Upload: Upload participant Excel sheet and template to generate all certificates automatically.
+
+Certificates will be saved in the certificates folder.
+
+📂 File Structure
 hackathon_certificate_generator/
 │
 ├─ index.html          # Frontend form
 ├─ style.css           # Styling
 ├─ script.js           # Frontend JavaScript
 ├─ app.py              # Python Flask backend
-├─ certificates/       # Generated certificates saved here
-└─ sample_template.png # Placeholder template
+├─ certificates/       # Generated certificates
+└─ sample_template.png # Placeholder certificate template
 
-🚀 How to Use
+📱 Responsive Design
 
-Install prerequisites
+The web app works seamlessly on:
 
-pip install flask pillow
+Desktop
 
+Tablets
 
-Start the backend
+Mobile devices
 
-python app.py
+⚡ Notes
 
+Replace sample_template.png with your own certificate template.
 
-Open index.html in a browser.
+Adjust font, name placement, and colors in app.py for customization.
 
-Choose Mode:
-
-Excel + Template: Upload your Excel file with participant data and the template.
-
-Manual Entry: Enter team/college info, member names, and preview.
-
-Generate Certificates 🎉
-
-Certificates are saved in the certificates folder.
-
-Member name fields reset automatically after generation.
-
-🎨 Customization
-
-Use your own template image with custom font and placement.
-
-Adjust name position in the template easily using Pillow coordinates.
-
-Supports any number of participants (manual or Excel mode).
-
-🌟 Why Use This Web App?
-
-Free & Open for Everyone 🌐
-
-Supports custom templates, custom data, and custom placement of names.
-
-Simple and fast workflow with preview option.
-
-📝 License
-
-This project is open-source and free to use for personal, educational, or hackathon purposes.
+The app is free for personal, educational, or hackathon use.
