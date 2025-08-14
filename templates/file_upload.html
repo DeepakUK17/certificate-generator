@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload - Certificate Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>File Upload Method</h1>
+            <a href="/" class="back-btn">← Back to Home</a>
+        </header>
+        
+        <main>
+            <div class="upload-form">
+                <div class="form-section">
+                    <h3>1. Browse Template</h3>
+                    <input type="file" id="templateFile" accept="image/*" class="file-input">
+                    <label for="templateFile" class="file-label">Choose Template Image</label>
+                    <div id="templatePreview" class="preview-container"></div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>2. Output Location</h3>
+                    <input type="text" id="outputPath" placeholder="Enter output folder path" class="text-input" value="generated_certificates">
+                </div>
+                
+                <div class="form-section">
+                    <h3>3. Data File</h3>
+                    <input type="file" id="dataFile" accept=".csv,.xlsx,.xls" class="file-input">
+                    <label for="dataFile" class="file-label">Choose Data File (CSV/Excel)</label>
+                    <div id="dataPreview" class="data-preview"></div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>4. Coordinate Settings</h3>
+                    <div id="coordinateSettings" class="coordinate-settings">
+                        <p>Upload data file first to see available fields</p>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>5. Preview & Generate</h3>
+                    <button id="previewBtn" class="btn btn-secondary" disabled>Preview Certificate</button>
+                    <button id="generateBtn" class="btn btn-primary" disabled>Generate All Certificates</button>
+                </div>
+                
+                <div id="previewModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h3>Certificate Preview</h3>
+                        <div id="previewImage"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="{{ url_for('static', filename='file_upload.js') }}"></script>
+</body>
+</html>

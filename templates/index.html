@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Certificate Generator</h1>
+            <p>Generate certificates for teams and individuals</p>
+        </header>
+        
+        <main>
+            <div class="options-container">
+                <div class="option-card">
+                    <div class="card-icon">📁</div>
+                    <h2>Upload Data File</h2>
+                    <p>Upload team details from Excel, CSV, or other file formats</p>
+                    <button class="btn btn-primary" onclick="location.href='/file-upload'">
+                        Choose File Upload
+                    </button>
+                </div>
+                
+                <div class="option-card">
+                    <div class="card-icon">✏️</div>
+                    <h2>Manual Entry</h2>
+                    <p>Enter member details manually with custom forms</p>
+                    <button class="btn btn-secondary" onclick="location.href='/manual-entry'">
+                        Enter Manually
+                    </button>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2024 Certificate Generator. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
