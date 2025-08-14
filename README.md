@@ -1,4 +1,4 @@
-# 🎉 Hackathon Certificate Generator 🏆
+ # 🎉 Hackathon Certificate Generator 🏆
 
 A **responsive web application** created using **HTML, CSS, JavaScript, and Python** to generate certificates for hackathon participants. This app allows users to use **custom templates**, add participant data **manually** or via **Excel**, preview certificates, and download them automatically. It’s **free for everyone**!
 
