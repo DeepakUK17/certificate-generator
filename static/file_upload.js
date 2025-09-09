@@ -2,6 +2,9 @@ let templatePath = ""
 let membersData = []
 let coordinates = {}
 
+// Set your desired font size here
+const FIXED_FONT_SIZE = 48; // Change this value as needed
+
 document.addEventListener("DOMContentLoaded", () => {
   const templateFile = document.getElementById("templateFile")
   const dataFile = document.getElementById("dataFile")
@@ -184,6 +187,7 @@ async function previewCertificate() {
         templatePath: templatePath,
         sampleData: membersData[0],
         coordinates: coordinates,
+        fontSize: FIXED_FONT_SIZE, // <-- Fixed font size
       }),
     })
 
@@ -230,6 +234,7 @@ async function generateCertificates() {
         outputPath: outputPath,
         membersData: membersData,
         coordinates: coordinates,
+        fontSize: FIXED_FONT_SIZE, // <-- Fixed font size
       }),
     })
 
