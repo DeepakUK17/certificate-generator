@@ -174,25 +174,5 @@ def preview_certificate():
 def get_preview(filename):
     return send_file(filename)
 
-@app.route('/download-certificates-zip')
-def download_certificates_zip():
-    zip_filename = 'certificates.zip'
-    zip_path = os.path.join(app.config['UPLOAD_FOLDER'], zip_filename)
-    certificates_folder = 'generated_certificates'
-
-    # Remove old zip if exists
-    if os.path.exists(zip_path):
-        os.remove(zip_path)
-
-    # Create new zip
-    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        for root, dirs, files in os.walk(certificates_folder):
-            for file in files:
-                file_path = os.path.join(root, file)
-                arcname = os.path.relpath(file_path, certificates_folder)
-                zipf.write(file_path, arcname)
-
-    return send_file(zip_path, as_attachment=True)
-
 if __name__ == '__main__':
     app.run(debug=True)
