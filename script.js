@@ -7,23 +7,27 @@ let currentTemplate = null
 let previewIndex = 0
 const manualMembers = []
 
+
+
 // Show/Hide sections
 function showFileUpload() {
-    document.getElementById('fileUploadSection').classList.remove('hidden');
-    document.getElementById('manualEntrySection').classList.add('hidden');
-    document.getElementById('previewSection').classList.add('hidden');
+  document.querySelector(".main-options").classList.add("hidden")
+  document.getElementById("fileUploadSection").classList.remove("hidden")
+  document.querySelector(".back-button").classList.remove("hidden")
 }
 
 function showManualEntry() {
-    document.getElementById('manualEntrySection').classList.remove('hidden');
-    document.getElementById('fileUploadSection').classList.add('hidden');
-    document.getElementById('previewSection').classList.add('hidden');
+  document.querySelector(".main-options").classList.add("hidden")
+  document.getElementById("manualEntrySection").classList.remove("hidden")
+  document.querySelector(".back-button").classList.remove("hidden")
 }
 
 function showMainOptions() {
-    document.getElementById('fileUploadSection').classList.add('hidden');
-    document.getElementById('manualEntrySection').classList.add('hidden');
-    document.getElementById('previewSection').classList.add('hidden');
+  document.querySelector(".main-options").classList.remove("hidden")
+  document.getElementById("fileUploadSection").classList.add("hidden")
+  document.getElementById("manualEntrySection").classList.add("hidden")
+  document.getElementById("previewSection").classList.add("hidden")
+  document.querySelector(".back-button").classList.add("hidden")
 }
 
 // File Upload Method
@@ -197,6 +201,61 @@ function previewManualCertificates() {
   showManualPreview()
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  // Add event listeners for font size inputs to update preview in real-time
+  const fontSizeInput = document.getElementById("fontSize")
+  const manualFontSizeInput = document.getElementById("manualFontSize")
+
+  if (fontSizeInput) {
+    fontSizeInput.addEventListener("input", () => {
+      if (currentTemplate && currentData.length > 0) {
+        showPreview()
+      }
+    })
+  }
+
+  if (manualFontSizeInput) {
+    manualFontSizeInput.addEventListener("input", () => {
+      if (currentTemplate && manualMembers.length > 0) {
+        showManualPreview()
+      }
+    })
+  }
+
+  // Add event listeners for coordinate inputs to update preview in real-time
+  const coordinateInputs = [
+    "nameX",
+    "nameY",
+    "collegeX",
+    "collegeY",
+    "departmentX",
+    "departmentY",
+    "manualNameX",
+    "manualNameY",
+    "manualCollegeX",
+    "manualCollegeY",
+    "manualDepartmentX",
+    "manualDepartmentY",
+  ]
+
+  coordinateInputs.forEach((inputId) => {
+    const input = document.getElementById(inputId)
+    if (input) {
+      input.addEventListener("input", () => {
+        if (inputId.startsWith("manual")) {
+          if (currentTemplate && manualMembers.length > 0) {
+            showManualPreview()
+          }
+        } else {
+          if (currentTemplate && currentData.length > 0) {
+            showPreview()
+          }
+        }
+      })
+    }
+  })
+})
+
 function showPreview() {
   document.getElementById("previewSection").classList.remove("hidden")
 
@@ -214,16 +273,19 @@ function showPreview() {
   const data = currentData[previewIndex]
 
   // Get coordinates
-  const nameX = Number.parseInt(document.getElementById("nameX").value)
-  const nameY = Number.parseInt(document.getElementById("nameY").value)
-  const collegeX = Number.parseInt(document.getElementById("collegeX").value)
-  const collegeY = Number.parseInt(document.getElementById("collegeY").value)
-  const departmentX = Number.parseInt(document.getElementById("departmentX").value)
-  const departmentY = Number.parseInt(document.getElementById("departmentY").value)
+  const nameX = Number.parseInt(document.getElementById("nameX").value) || 400
+  const nameY = Number.parseInt(document.getElementById("nameY").value) || 300
+  const collegeX = Number.parseInt(document.getElementById("collegeX").value) || 400
+  const collegeY = Number.parseInt(document.getElementById("collegeY").value) || 350
+  const departmentX = Number.parseInt(document.getElementById("departmentX").value) || 400
+  const departmentY = Number.parseInt(document.getElementById("departmentY").value) || 400
+  const fontSize = Number.parseInt(document.getElementById("fontSize").value) || 24
+
+  console.log("[v0] Font size being applied:", fontSize)
 
   // Draw text
   ctx.fillStyle = "#000000"
-  ctx.font = "bold 24px Arial"
+  ctx.font = `bold ${fontSize}px Arial`
   ctx.textAlign = "center"
 
   ctx.fillText(data.name || "", nameX, nameY)
@@ -251,16 +313,19 @@ function showManualPreview() {
   const data = manualMembers[previewIndex]
 
   // Get coordinates
-  const nameX = Number.parseInt(document.getElementById("manualNameX").value)
-  const nameY = Number.parseInt(document.getElementById("manualNameY").value)
-  const collegeX = Number.parseInt(document.getElementById("manualCollegeX").value)
-  const collegeY = Number.parseInt(document.getElementById("manualCollegeY").value)
-  const departmentX = Number.parseInt(document.getElementById("manualDepartmentX").value)
-  const departmentY = Number.parseInt(document.getElementById("manualDepartmentY").value)
+  const nameX = Number.parseInt(document.getElementById("manualNameX").value) || 400
+  const nameY = Number.parseInt(document.getElementById("manualNameY").value) || 300
+  const collegeX = Number.parseInt(document.getElementById("manualCollegeX").value) || 400
+  const collegeY = Number.parseInt(document.getElementById("manualCollegeY").value) || 350
+  const departmentX = Number.parseInt(document.getElementById("manualDepartmentX").value) || 400
+  const departmentY = Number.parseInt(document.getElementById("manualDepartmentY").value) || 400
+  const fontSize = Number.parseInt(document.getElementById("manualFontSize").value) || 24
+
+  console.log("[v0] Manual font size being applied:", fontSize)
 
   // Draw text
   ctx.fillStyle = "#000000"
-  ctx.font = "bold 24px Arial"
+  ctx.font = `bold ${fontSize}px Arial`
   ctx.textAlign = "center"
 
   ctx.fillText(data.name || "", nameX, nameY)
@@ -272,6 +337,7 @@ function showManualPreview() {
 }
 
 function prevPreview() {
+  const dataLength = currentData.length > 0 ? currentData.length : manualMembers.length
   if (previewIndex > 0) {
     previewIndex--
     if (currentData.length > 0) {
@@ -367,27 +433,31 @@ async function generateCertificate(data, mode) {
   ctx.drawImage(currentTemplate, 0, 0)
 
   // Get coordinates based on mode
-  let nameX, nameY, collegeX, collegeY, departmentX, departmentY
+  let nameX, nameY, collegeX, collegeY, departmentX, departmentY, fontSize
 
   if (mode === "file") {
-    nameX = Number.parseInt(document.getElementById("nameX").value)
-    nameY = Number.parseInt(document.getElementById("nameY").value)
-    collegeX = Number.parseInt(document.getElementById("collegeX").value)
-    collegeY = Number.parseInt(document.getElementById("collegeY").value)
-    departmentX = Number.parseInt(document.getElementById("departmentX").value)
-    departmentY = Number.parseInt(document.getElementById("departmentY").value)
+    nameX = Number.parseInt(document.getElementById("nameX").value) || 400
+    nameY = Number.parseInt(document.getElementById("nameY").value) || 300
+    collegeX = Number.parseInt(document.getElementById("collegeX").value) || 400
+    collegeY = Number.parseInt(document.getElementById("collegeY").value) || 350
+    departmentX = Number.parseInt(document.getElementById("departmentX").value) || 400
+    departmentY = Number.parseInt(document.getElementById("departmentY").value) || 400
+    fontSize = Number.parseInt(document.getElementById("fontSize").value) || 24
   } else {
-    nameX = Number.parseInt(document.getElementById("manualNameX").value)
-    nameY = Number.parseInt(document.getElementById("manualNameY").value)
-    collegeX = Number.parseInt(document.getElementById("manualCollegeX").value)
-    collegeY = Number.parseInt(document.getElementById("manualCollegeY").value)
-    departmentX = Number.parseInt(document.getElementById("manualDepartmentX").value)
-    departmentY = Number.parseInt(document.getElementById("manualDepartmentY").value)
+    nameX = Number.parseInt(document.getElementById("manualNameX").value) || 400
+    nameY = Number.parseInt(document.getElementById("manualNameY").value) || 300
+    collegeX = Number.parseInt(document.getElementById("manualCollegeX").value) || 400
+    collegeY = Number.parseInt(document.getElementById("manualCollegeY").value) || 350
+    departmentX = Number.parseInt(document.getElementById("manualDepartmentX").value) || 400
+    departmentY = Number.parseInt(document.getElementById("manualDepartmentY").value) || 400
+    fontSize = Number.parseInt(document.getElementById("manualFontSize").value) || 24
   }
+
+  console.log("[v0] Generation font size:", fontSize)
 
   // Draw text
   ctx.fillStyle = "#000000"
-  ctx.font = "bold 24px Arial"
+  ctx.font = `bold ${fontSize}px Arial`
   ctx.textAlign = "center"
 
   ctx.fillText(data.name || "", nameX, nameY)
