@@ -6,7 +6,7 @@
     <title>Certificate Generator</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- Removed JSZip script since we're no longer using ZIP functionality -->
 </head>
 <body>
     <div class="container">
@@ -47,6 +47,11 @@
             <div class="coordinates-section">
                 <h3>3. Adjust Text Positions:</h3>
                 <div class="coordinate-inputs">
+                    <div class="coord-group">
+                        <label>Font Size:</label>
+                        <input type="number" id="fontSize" placeholder="Font Size" value="24" min="10" max="100">
+                        <span>px</span>
+                    </div>
                     <div class="coord-group">
                         <label>Name Position:</label>
                         <input type="number" id="nameX" placeholder="X" value="400">
@@ -95,6 +100,11 @@
                 <h3>4. Adjust Text Positions:</h3>
                 <div class="coordinate-inputs">
                     <div class="coord-group">
+                        <label>Font Size:</label>
+                        <input type="number" id="manualFontSize" placeholder="Font Size" value="24" min="10" max="100">
+                        <span>px</span>
+                    </div>
+                    <div class="coord-group">
                         <label>Name Position:</label>
                         <input type="number" id="manualNameX" placeholder="X" value="400">
                         <input type="number" id="manualNameY" placeholder="Y" value="300">
@@ -136,7 +146,7 @@
                 <form id="memberForm">
                     <input type="text" id="memberName" placeholder="Full Name" required>
                     <input type="text" id="memberCollege" placeholder="College Name" required>
-                    <input type="text" id="memberDepartment" placeholder="Department" >
+                    <input type="text" id="memberDepartment" placeholder="Department" required>
                     <div class="modal-buttons">
                         <button type="button" onclick="hideAddMemberModal()" class="btn-secondary">Cancel</button>
                         <button type="submit" class="btn-primary">Add Member</button>
