@@ -1,24 +1,31 @@
 let templatePath = ""
-let membersData = []
-let coordinates = {}
+const members = []
 
 document.addEventListener("DOMContentLoaded", () => {
   const templateFile = document.getElementById("templateFile")
-  const dataFile = document.getElementById("dataFile")
+  const addMemberBtn = document.getElementById("addMemberBtn")
   const previewBtn = document.getElementById("previewBtn")
   const generateBtn = document.getElementById("generateBtn")
-  const modal = document.getElementById("previewModal")
-  const closeBtn = document.querySelector(".close")
+  const memberModal = document.getElementById("memberModal")
+  const previewModal = document.getElementById("previewModal")
+  const memberForm = document.getElementById("memberForm")
+  const closeBtns = document.querySelectorAll(".close")
 
   templateFile.addEventListener("change", handleTemplateUpload)
-  dataFile.addEventListener("change", handleDataUpload)
+  addMemberBtn.addEventListener("click", () => (memberModal.style.display = "block"))
   previewBtn.addEventListener("click", previewCertificate)
   generateBtn.addEventListener("click", generateCertificates)
-  closeBtn.addEventListener("click", () => (modal.style.display = "none"))
+  memberForm.addEventListener("submit", handleAddMember)
+
+  closeBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.target.closest(".modal").style.display = "none"
+    })
+  })
 
   window.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.style.display = "none"
+    if (e.target.classList.contains("modal")) {
+      e.target.style.display = "none"
     }
   })
 })
@@ -54,38 +61,6 @@ async function handleTemplateUpload(event) {
   }
 }
 
-async function handleDataUpload(event) {
-  const file = event.target.files[0]
-  if (!file) return
-
-  const formData = new FormData()
-  formData.append("dataFile", file)
-
-  try {
-    showLoading("Processing data file...")
-    const response = await fetch("/upload-data", {
-      method: "POST",
-      body: formData,
-    })
-
-    const result = await response.json()
-    hideLoading()
-
-    if (response.ok) {
-      membersData = result.data
-      displayDataPreview(result.data, result.columns)
-      setupCoordinateSettings(result.columns)
-      showSuccess(`Data file processed! Found ${result.data.length} records.`)
-      checkFormCompletion()
-    } else {
-      showError(result.error || "Failed to process data file")
-    }
-  } catch (error) {
-    hideLoading()
-    showError("Error processing data file: " + error.message)
-  }
-}
-
 function displayTemplatePreview(file) {
   const preview = document.getElementById("templatePreview")
   const img = document.createElement("img")
@@ -96,82 +71,87 @@ function displayTemplatePreview(file) {
   preview.appendChild(img)
 }
 
-function displayDataPreview(data, columns) {
-  const preview = document.getElementById("dataPreview")
-  let html = "<h4>Data Preview (First 5 rows):</h4>"
-  html += '<table style="width: 100%; border-collapse: collapse;">'
+function handleAddMember(event) {
+  event.preventDefault()
 
-  // Headers
-  html += "<tr>"
-  columns.forEach((col) => {
-    html += `<th style="border: 1px solid #ddd; padding: 8px; background: #f5f5f5;">${col}</th>`
-  })
-  html += "</tr>"
+  const name = document.getElementById("memberName").value
+  const college = document.getElementById("memberCollege").value
+  const department = document.getElementById("memberDepartment").value
+  const teamId = document.getElementById("memberTeamId").value
 
-  // Data rows (first 5)
-  data.slice(0, 5).forEach((row) => {
-    html += "<tr>"
-    columns.forEach((col) => {
-      html += `<td style="border: 1px solid #ddd; padding: 8px;">${row[col] || ""}</td>`
-    })
-    html += "</tr>"
-  })
+  const member = {
+    name: name,
+    college: college,
+    department: department,
+    team_id: teamId,
+  }
 
-  html += "</table>"
-  preview.innerHTML = html
+  members.push(member)
+  displayMembers()
+
+  // Reset form and close modal
+  document.getElementById("memberForm").reset()
+  document.getElementById("memberModal").style.display = "none"
+
+  checkFormCompletion()
+  showSuccess(`Added ${name} to the list`)
 }
 
-function setupCoordinateSettings(columns) {
-  const container = document.getElementById("coordinateSettings")
-  let html = "<h4>Text Positioning (X, Y coordinates):</h4>"
+function displayMembers() {
+  const membersList = document.getElementById("membersList")
 
-  columns.forEach((column) => {
+  if (members.length === 0) {
+    membersList.innerHTML = "<p>No members added yet.</p>"
+    return
+  }
+
+  let html = ""
+  members.forEach((member, index) => {
     html += `
-            <div class="coordinate-field">
-                <label>${column}:</label>
-                <input type="number" id="${column}X" placeholder="X" value="100">
-                <input type="number" id="${column}Y" placeholder="Y" value="200">
+            <div class="member-item">
+                <div class="member-info">
+                    <strong>${member.name}</strong>
+                    <span>${member.college} - ${member.department} (Team: ${member.team_id})</span>
+                </div>
+                <button class="remove-btn" onclick="removeMember(${index})">Remove</button>
             </div>
         `
   })
 
-  container.innerHTML = html
-
-  // Add event listeners to coordinate inputs
-  columns.forEach((column) => {
-    const xInput = document.getElementById(`${column}X`)
-    const yInput = document.getElementById(`${column}Y`)
-
-    if (xInput && yInput) {
-      xInput.addEventListener("change", updateCoordinates)
-      yInput.addEventListener("change", updateCoordinates)
-    }
-  })
+  membersList.innerHTML = html
 }
 
-function updateCoordinates() {
-  coordinates = {}
-  const coordinateInputs = document.querySelectorAll("#coordinateSettings input")
+function removeMember(index) {
+  members.splice(index, 1)
+  displayMembers()
+  checkFormCompletion()
+  showSuccess("Member removed from list")
+}
 
-  coordinateInputs.forEach((input) => {
-    const fieldName = input.id.replace(/[XY]$/, "")
-    const coordinate = input.id.endsWith("X") ? "x" : "y"
-
-    if (!coordinates[fieldName]) {
-      coordinates[fieldName] = {}
-    }
-
-    coordinates[fieldName][coordinate] = Number.parseInt(input.value) || 0
-  })
+function getCoordinates() {
+  return {
+    name: {
+      x: Number.parseInt(document.getElementById("nameX").value) || 100,
+      y: Number.parseInt(document.getElementById("nameY").value) || 200,
+    },
+    college: {
+      x: Number.parseInt(document.getElementById("collegeX").value) || 100,
+      y: Number.parseInt(document.getElementById("collegeY").value) || 250,
+    },
+    department: {
+      x: Number.parseInt(document.getElementById("departmentX").value) || 100,
+      y: Number.parseInt(document.getElementById("departmentY").value) || 300,
+    },
+  }
 }
 
 async function previewCertificate() {
-  if (!templatePath || membersData.length === 0) {
-    showError("Please upload template and data file first")
+  if (!templatePath || members.length === 0) {
+    showError("Please upload template and add at least one member")
     return
   }
 
-  updateCoordinates()
+  const coordinates = getCoordinates()
 
   try {
     showLoading("Generating preview...")
@@ -182,7 +162,7 @@ async function previewCertificate() {
       },
       body: JSON.stringify({
         templatePath: templatePath,
-        sampleData: membersData[0],
+        sampleData: members[0],
         coordinates: coordinates,
       }),
     })
@@ -210,12 +190,12 @@ function displayPreview(previewPath) {
 }
 
 async function generateCertificates() {
-  if (!templatePath || membersData.length === 0) {
-    showError("Please upload template and data file first")
+  if (!templatePath || members.length === 0) {
+    showError("Please upload template and add at least one member")
     return
   }
 
-  updateCoordinates()
+  const coordinates = getCoordinates()
   const outputPath = document.getElementById("outputPath").value || "generated_certificates"
 
   try {
@@ -228,7 +208,7 @@ async function generateCertificates() {
       body: JSON.stringify({
         templatePath: templatePath,
         outputPath: outputPath,
-        membersData: membersData,
+        membersData: members,
         coordinates: coordinates,
       }),
     })
@@ -251,19 +231,17 @@ function checkFormCompletion() {
   const previewBtn = document.getElementById("previewBtn")
   const generateBtn = document.getElementById("generateBtn")
 
-  if (templatePath && membersData.length > 0) {
+  if (templatePath && members.length > 0) {
     previewBtn.disabled = false
     generateBtn.disabled = false
   }
 }
 
 function showLoading(message) {
-  // You can implement a loading spinner here
   console.log("Loading:", message)
 }
 
 function hideLoading() {
-  // Hide loading spinner
   console.log("Loading complete")
 }
 
@@ -271,7 +249,7 @@ function showSuccess(message) {
   const alertDiv = document.createElement("div")
   alertDiv.className = "success-message"
   alertDiv.textContent = message
-  document.querySelector(".upload-form").prepend(alertDiv)
+  document.querySelector(".manual-form").prepend(alertDiv)
 
   setTimeout(() => {
     alertDiv.remove()
@@ -282,7 +260,7 @@ function showError(message) {
   const alertDiv = document.createElement("div")
   alertDiv.className = "error-message"
   alertDiv.textContent = message
-  document.querySelector(".upload-form").prepend(alertDiv)
+  document.querySelector(".manual-form").prepend(alertDiv)
 
   setTimeout(() => {
     alertDiv.remove()
